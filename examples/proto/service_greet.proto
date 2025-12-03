@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package greet;
+
+import "validate/validate.proto";
+import "google/api/annotations.proto";
+option go_package = "xgen-uranus/examples/pb/greet";
+service Greet {
+  rpc Greet(HelloRequest) returns (HelloReturn) {
+  };
+
+}
+
+message HelloRequest {
+  string name = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+message HelloReturn {
+  string reply = 2;
+}
