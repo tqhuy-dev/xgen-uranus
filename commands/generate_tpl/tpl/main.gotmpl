@@ -1,0 +1,45 @@
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/tqhuy-dev/xgen-uranus/common"
+	"github.com/tqhuy-dev/xgen-uranus/interceptors"
+	"github.com/tqhuy-dev/xgen-uranus/transport"
+	"github.com/tqhuy-dev/xgen-uranus/transport/grpc"
+	"go.uber.org/zap"
+)
+
+const (
+	appName = "{{ .AppName | default "uranus-app" }}"
+	port    = {{ .Port | default 10000 }}
+)
+
+func main() {
+	fmt.Printf("🚀 Starting %s on port %d...\n", appName, port)
+	
+	zapLog, _ := zap.NewProduction()
+	defer zapLog.Sync()
+
+	serverGrpc := grpc.NewServer(
+		grpc.WithConnectorOption(grpc.ConnectorOption{
+			Port:    port,
+			AppName: appName,
+		}),
+		grpc.WithReflection(),
+		grpc.WithZapLog(zapLog),
+		grpc.WithUnaryInterceptors(
+			interceptors.CorrelationTracing(),
+			interceptors.ZapLogInterceptor(zapLog),
+			interceptors.Validators(),
+		)).ApplyHealth().Register(func(server *grpc.Server) {})
+
+	uranusApp := transport.NewUranusSever().WithGracefulShutdown(common.GracefulShutdown{
+		Timeout:  5 * time.Second,
+		HardStop: 5 * time.Second,
+		Signal:   common.SignalStopDefault,
+	}).WithZapLog(zapLog).WithGrpcServer(serverGrpc)
+	
+	uranusApp.Run()
+}
