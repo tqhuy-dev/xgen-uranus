@@ -7,10 +7,15 @@ A powerful CLI tool designed to help developers quickly scaffold and manage micr
 ### Option 1: Install from GitHub (Recommended)
 
 ```bash
-go install github.com/tqhuy-dev/xgen-uranus@latest
+go install github.com/tqhuy-dev/xgen-uranus/cmd/uranus@latest
 ```
 
-After installation, the `xgen-uranus` binary will be available in your `$GOPATH/bin` directory.
+After installation, the `uranus` binary will be available in your `$GOPATH/bin` directory.
+
+> **Note:** Make sure `$GOPATH/bin` is in your `PATH`. Add this to your shell config if needed:
+> ```bash
+> export PATH=$PATH:$(go env GOPATH)/bin
+> ```
 
 ### Option 2: Build from Source
 
@@ -148,18 +153,21 @@ make fmt
 
 ```
 xgen-uranus/
+├── cmd/
+│   └── uranus/         # CLI entry point
+│       └── main.go
 ├── commands/           # CLI commands (Cobra)
 │   ├── root.go         # Root command
 │   ├── generate.go     # Generate parent command
 │   ├── generate_app.go # Generate app subcommand
 │   ├── generate_repo.go# Generate repo subcommand
+│   ├── generate_tpl/   # Templates for code generation
 │   ├── list.go         # List parent command
 │   └── list_repo.go    # List repo subcommand
 ├── common/             # Common utilities
 ├── interceptors/       # gRPC/HTTP interceptors
 ├── transport/          # Transport layer (gRPC, HTTP)
 ├── grpc_third_party/   # Third-party proto files
-├── main.go             # Entry point
 ├── Makefile            # Build automation
 └── README.md           # This file
 ```

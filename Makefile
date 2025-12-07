@@ -12,7 +12,7 @@ SERVICES=$(patsubst proto/service_%.proto,%,$(PROTO_FILES))
 .PHONY: build
 build:
 	@echo "🔨 Building $(BINARY_NAME)..."
-	go build $(LDFLAGS) -o $(BINARY_NAME) .
+	go build $(LDFLAGS) -o $(BINARY_NAME) ./cmd/uranus
 	@echo "✅ Build complete: ./$(BINARY_NAME)"
 
 .PHONY: build-all
@@ -22,19 +22,19 @@ build-all: build-linux build-darwin build-windows
 .PHONY: build-linux
 build-linux:
 	@echo "🐧 Building for Linux..."
-	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-linux-amd64 .
-	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-linux-arm64 .
+	GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-linux-amd64 ./cmd/uranus
+	GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-linux-arm64 ./cmd/uranus
 
 .PHONY: build-darwin
 build-darwin:
 	@echo "🍎 Building for macOS..."
-	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-darwin-amd64 .
-	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-darwin-arm64 .
+	GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-darwin-amd64 ./cmd/uranus
+	GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-darwin-arm64 ./cmd/uranus
 
 .PHONY: build-windows
 build-windows:
 	@echo "🪟 Building for Windows..."
-	GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-windows-amd64.exe .
+	GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o dist/$(BINARY_NAME)-windows-amd64.exe ./cmd/uranus
 
 .PHONY: install
 install: build
@@ -59,7 +59,7 @@ clean:
 
 .PHONY: run
 run:
-	go run . $(ARGS)
+	go run ./cmd/uranus $(ARGS)
 
 .PHONY: test
 test:
